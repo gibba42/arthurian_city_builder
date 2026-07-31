@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { BUILDINGS, BUILDING_HOTKEYS } from '../../data/buildings';
 import type { BuildingType, PlacedBuilding } from '../../types/Building';
-import { buildingSystem, gameEvents, GRID, gridSystem, resourceSystem } from '../GameState';
+import { buildingSystem, GRID, gridSystem, resourceSystem } from '../GameState';
 
 export class VillageScene extends Phaser.Scene {
   private selected: BuildingType = 'woodcutter';
@@ -23,7 +23,7 @@ export class VillageScene extends Phaser.Scene {
     this.scene.launch('UI');
     this.select(this.selected);
   }
-  update(_time: number, delta: number): void { buildingSystem.update(delta); gameEvents.emit('resources-changed', resourceSystem.getAll()); }
+  update(_time: number, delta: number): void { buildingSystem.update(delta); }
   private drawGroundAndGrid(): void {
     this.add.rectangle(GRID.origin.x, GRID.origin.y, GRID.columns * GRID.cellSize, GRID.rows * GRID.cellSize, 0x34482f).setOrigin(0);
     const lines = this.add.graphics().lineStyle(1, 0x829174, 0.38);
@@ -43,7 +43,7 @@ export class VillageScene extends Phaser.Scene {
   private tryPlace(pointer: Phaser.Input.Pointer): void {
     const result = buildingSystem.place(this.selected, gridSystem.worldToGrid(pointer.worldX, pointer.worldY));
     if (!result.ok) { this.message.setText(result.reason); return; }
-    this.drawBuilding(result.building); this.message.setText(`${BUILDINGS[result.building.type].name} raised.`); gameEvents.emit('resources-changed', resourceSystem.getAll());
+    this.drawBuilding(result.building); this.message.setText(`${BUILDINGS[result.building.type].name} raised.`);
   }
   private drawBuilding(building: PlacedBuilding): void {
     const definition = BUILDINGS[building.type]; const world = gridSystem.gridToWorld(building.position);

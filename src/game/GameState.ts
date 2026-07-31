@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import { STARTING_RESOURCES } from '../data/resources';
 import { BuildingSystem } from '../systems/BuildingSystem';
 import { GridSystem } from '../systems/GridSystem';
@@ -8,4 +7,3 @@ export const GRID = { columns: 18, rows: 12, cellSize: 40, origin: { x: 24, y: 9
 export const resourceSystem = new ResourceSystem(STARTING_RESOURCES);
 export const gridSystem = new GridSystem(GRID.columns, GRID.rows, GRID.cellSize, GRID.origin);
 export const buildingSystem = new BuildingSystem(gridSystem, resourceSystem);
-export const gameEvents = new Phaser.Events.EventEmitter();
