@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { ResourceAmounts } from '../../types/Resource';
-import { gameEvents, resourceSystem } from '../GameState';
+import { resourceSystem } from '../GameState';
 
 export class UIScene extends Phaser.Scene {
   private hud!: Phaser.GameObjects.Text;
@@ -11,8 +11,8 @@ export class UIScene extends Phaser.Scene {
     this.hud = this.add.text(780, 67, '', { fontFamily: 'monospace', fontSize: '17px', color: '#ded5b9', lineSpacing: 10 });
     this.renderResources(resourceSystem.getAll());
     this.add.text(780, 265, 'Build by pressing a\nnumber, then click\nan open grid square.\n\nProduction arrives\nover time.', { fontFamily: 'Georgia', fontSize: '15px', color: '#aeb99e', lineSpacing: 5 });
-    gameEvents.on('resources-changed', this.renderResources, this);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => gameEvents.off('resources-changed', this.renderResources, this));
+    const stopListening = resourceSystem.onChange((resources) => this.renderResources(resources));
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopListening);
   }
   private renderResources(resources: Readonly<ResourceAmounts>): void {
     const icon: Record<keyof ResourceAmounts, string> = { wood: 'WOOD', stone: 'STONE', food: 'FOOD', faith: 'FAITH', renown: 'RENOWN' };
