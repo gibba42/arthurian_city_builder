@@ -49,3 +49,12 @@ Install dependencies:
 
 ```bash
 npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Press number keys 1–5 to choose a structure, then click an open grid square to build it. Resource-producing structures add to the debug HUD over time.
