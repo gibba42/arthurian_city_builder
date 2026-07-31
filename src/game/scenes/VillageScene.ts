@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { BUILDINGS, BUILDING_HOTKEYS } from '../../data/buildings';
+import { RESEARCH, RESEARCH_DEBUG_HOTKEYS } from '../../data/research';
 import type { BuildingType, PlacedBuilding } from '../../types/Building';
-import { buildingSystem, GRID, gridSystem, resourceSystem } from '../GameState';
+import { buildingSystem, GRID, gridSystem, researchSystem, resourceSystem } from '../GameState';
 
 export class VillageScene extends Phaser.Scene {
   private selected: BuildingType = 'woodcutter';
@@ -18,6 +19,10 @@ export class VillageScene extends Phaser.Scene {
     if (hall.ok) this.drawBuilding(hall.building);
     buildingSystem.buildings.forEach((building) => { if (!this.children.getByName(`building-${building.id}`)) this.drawBuilding(building); });
     Object.entries(BUILDING_HOTKEYS).forEach(([key, type]) => this.input.keyboard?.on(`keydown-${key}`, () => this.select(type)));
+    Object.entries(RESEARCH_DEBUG_HOTKEYS).forEach(([key, id]) => this.input.keyboard?.on(`keydown-${key}`, () => {
+      const result = researchSystem.unlock(id);
+      this.message.setText(result.ok ? `${RESEARCH[id].name} unlocked.` : result.reason);
+    }));
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.moveGhost(pointer));
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.tryPlace(pointer));
     this.scene.launch('UI');
